@@ -1,7 +1,7 @@
 const { send } = require('micro');
 const { router, get } = require('microrouter');
 const { Client } = require('pg');
-const client = new Client({connectionString: "postgres://jakob:Jakobw123@178.62.168.232:5432/meeka_quests" });
+const client = new Client({connectionString: process.env.PSQL });
 
 
 client.connect();
