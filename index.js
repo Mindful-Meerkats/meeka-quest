@@ -1,7 +1,7 @@
 const { send } = require('micro');
 const { router, get } = require('microrouter');
 const { Client } = require('pg');
-const client = new Client({connectionString: process.env.PSQL });
+const client = new Client({connectionString: "postgres://jakob:Jakobw123@178.62.168.232:5432/meeka_quests" });
 
 
 client.connect();
@@ -12,7 +12,7 @@ const rquest = async (req,rep)=>{
 		const res = await client.query('SELECT * FROM quests ORDER BY RANDOM() LIMIT 1');
 		quest = {
 				id: res.rows[0].id,
-				quest: res.rows[0].task,
+				quest: res.rows[0].quest,
 				title: res.rows[0].title,
 				description: res.rows[0].description,
 				 mind: res.rows[0].mind,
@@ -35,7 +35,7 @@ const findbyid = async (req,rep)=>{
 		const res = await client.query('SELECT * FROM quests WHERE id = $1',[req.params.id]);
 		quest = {
 				id: res.rows[0].id,
-				quest: res.rows[0].task,
+				quest: res.rows[0].quest,
 				title: res.rows[0].title,
 				description: res.rows[0].description,
 				 mind: res.rows[0].mind,
@@ -59,7 +59,7 @@ const list5 = async (req,rep)=>{
 		for(let row of res.rows)
 			quests.push({
 				id: row.id,
-				quest: row.task,
+				quest: row.quest,
 				title: row.title,
 				description: row.description,
 				 mind: row.mind,
