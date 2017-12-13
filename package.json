@@ -1,0 +1,19 @@
+{
+  "name": "meeka-quest",
+  "version": "1.0.0",
+  "description": "Meeka Quest service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mindful-Meerkats/meeka-quest.git"
+  },
+  "author": "Jakob Wedemeyer <jake@noodel.me> (http://jakob-wedemyer.de)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mindful-Meerkats/meeka-quest/issues"
+  },
+  "homepage": "https://github.com/Mindful-Meerkats/meeka-quest#readme"
+}
