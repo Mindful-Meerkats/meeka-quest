@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/Mindful-Meerkats/meeka-quest/issues"
   },
-  "homepage": "https://github.com/Mindful-Meerkats/meeka-quest#readme"
+  "homepage": "https://github.com/Mindful-Meerkats/meeka-quest#readme",
+  "dependencies": {
+    "micro": "^9.0.2"
+  },
+  "devDependencies": {
+    "micro-dev": "^2.1.0"
+  }
 }
