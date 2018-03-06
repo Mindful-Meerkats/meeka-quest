@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Mindful-Meerkats/meeka-quest#readme",
   "dependencies": {
     "micro": "^9.0.2",
+    "micro-ratelimit": "^0.3.0",
     "microrouter": "^3.0.0",
     "neat-csv": "^2.1.0",
     "node-fetch": "^1.7.3",
