@@ -15,13 +15,13 @@ const rquest = async (req,rep)=>{
 				quest: res.rows[0].quest,
 				title: res.rows[0].title,
 				description: res.rows[0].description,
-				 mind: res.rows[0].mind,
-            	body: res.rows[0].body,
-            	soul: res.rows[0].soul,
-            	community: res.rows[0].community,
-            	thriftiness: res.rows[0].thriftiness,
-            	pawprint: res.rows[0].pawprint,
-            	happiness: res.rows[0].happiness
+				mind: res.rows[0].mind,
+        body: res.rows[0].body,
+        soul: res.rows[0].soul,
+        community: res.rows[0].community,
+        thriftiness: res.rows[0].thriftiness,
+        pawprint: res.rows[0].pawprint,
+        happiness: res.rows[0].happiness
 			};
 	} catch(err){
 		console.log(err.stack);
@@ -30,6 +30,11 @@ const rquest = async (req,rep)=>{
 }
 
 const findbyid = async (req,rep)=>{
+  if (!req.params.id) {
+    send(rep,400);
+    return;
+  }
+
 	let quest;
 	try {
 		const res = await client.query('SELECT * FROM quests WHERE id = $1',[req.params.id]);
@@ -38,13 +43,13 @@ const findbyid = async (req,rep)=>{
 				quest: res.rows[0].quest,
 				title: res.rows[0].title,
 				description: res.rows[0].description,
-				 mind: res.rows[0].mind,
-            	body: res.rows[0].body,
-            	soul: res.rows[0].soul,
-            	community: res.rows[0].community,
-            	thriftiness: res.rows[0].thriftiness,
-            	pawprint: res.rows[0].pawprint,
-            	happiness: res.rows[0].happiness
+				mind: res.rows[0].mind,
+        body: res.rows[0].body,
+        soul: res.rows[0].soul,
+        community: res.rows[0].community,
+        thriftiness: res.rows[0].thriftiness,
+        pawprint: res.rows[0].pawprint,
+        happiness: res.rows[0].happiness
 			};
 	} catch(err){
 		console.log(err.stack);
@@ -62,13 +67,13 @@ const list5 = async (req,rep)=>{
 				quest: row.quest,
 				title: row.title,
 				description: row.description,
-				 mind: row.mind,
-            	body: row.body,
-            	soul: row.soul,
-            	community: row.community,
-            	thriftiness: row.thriftiness,
-            	pawprint: row.pawprint,
-            	happiness: row.happiness
+				mind: row.mind,
+        body: row.body,
+        soul: row.soul,
+        community: row.community,
+        thriftiness: row.thriftiness,
+        pawprint: row.pawprint,
+        happiness: row.happiness
 			});
 	} catch(err){
 		console.log(err.stack);
@@ -76,9 +81,69 @@ const list5 = async (req,rep)=>{
 	send(rep,200, quests);
 }
 
+const list = async (req,rep)=>{
+	if (!req.params.count) {
+		send(rep,400);
+		return;
+	}
+
+	let quests = [];
+	try {
+		const res = await client.query('SELECT * FROM quests ORDER BY RANDOM() LIMIT $1',[req.params.count]);
+		for(let row of res.rows)
+			quests.push({
+				id: row.id,
+				quest: row.quest,
+				title: row.title,
+				description: row.description,
+				mind: row.mind,
+        body: row.body,
+        soul: row.soul,
+        community: row.community,
+        thriftiness: row.thriftiness,
+        pawprint: row.pawprint,
+        happiness: row.happiness
+			});
+	} catch(err){
+		console.log(err.stack);
+	}
+	send(rep,200, quests);
+}
+
+const typedlist = async (req,rep)=>{
+  if (!(req.params.count || req.params.type)) {
+    send(rep,400);
+    return;
+  }
+
+  let quests = [];
+  try {
+    const res = await client.query('SELECT * FROM quests WHERE $1 > 0 ORDER BY RANDOM() LIMIT $2',[req.params.type,req.params.count]);
+    for(let row of res.rows)
+      quests.push({
+        id: row.id,
+        quest: row.quest,
+        title: row.title,
+        description: row.description,
+        mind: row.mind,
+        body: row.body,
+        soul: row.soul,
+        community: row.community,
+        thriftiness: row.thriftiness,
+        pawprint: row.pawprint,
+        happiness: row.happiness
+      });
+  } catch(err){
+    console.log(err.stack);
+  }
+  send(rep,200, quests);
+}
+
 
 module.exports = router(
 	get('/rquest',rquest),
 	get('/find/:id',findbyid),
-	get('/list5',list5)
+	get('/list5',list5),
+  get('/list/:count',list),
+  get('/list/:count/:type',typedlist)
 	)
