@@ -26,3 +26,11 @@ returns a list of 5 random quests
 ```/findbyid/:id```
 
 gets a quest by its id
+
+## TODO
+
+```/list/:count```
+shall return a list of the given length filled with random quests
+
+```/list/:count/:type```
+shall return a list of the given length filled with random quests of the given `type`
