@@ -1,5 +1,6 @@
 const { send } = require('micro');
 const { router, get } = require('microrouter');
+const jwtAuth = require('micro-jwt-auth');
 const { Client } = require('pg');
 const client = new Client({connectionString: process.env.PSQL });
 
@@ -31,7 +32,7 @@ const rquest = async (req,rep)=>{
 
 const findbyid = async (req,rep)=>{
   if (!req.params.id) {
-    send(rep,400);
+    send(rep,400, "Missing parameters");
     return;
   }
 
@@ -83,7 +84,7 @@ const list5 = async (req,rep)=>{
 
 const list = async (req,rep)=>{
   if (!req.params.count) {
-    send(rep,400);
+    send(rep,400, "Missing parameters");
     return;
   }
 
@@ -112,7 +113,7 @@ const list = async (req,rep)=>{
 
 const typedlist = async (req,rep)=>{
   if (!(req.params.count || req.params.type)) {
-    send(rep,400);
+    send(rep,400,"Missing parameters");
     return;
   }
 
@@ -139,11 +140,67 @@ const typedlist = async (req,rep)=>{
   send(rep,200, quests);
 }
 
+const current = jwtAuth(token)(async(req,rep)=>{
+    let quests = [];
+    try {
+      const res = await client.query('SELECT * FROM current_quests WHERE user_id = $1',[req.jwt.user]);
+    for(let row of res.rows)
+      quests.push({
+        id: row.id,
+        quest: row.quest,
+        title: row.title,
+        description: row.description,
+        mind: row.mind,
+        body: row.body,
+        soul: row.soul,
+        community: row.community,
+        thriftiness: row.thriftiness,
+        pawprint: row.pawprint,
+        happiness: row.happiness
+      });
+  } catch(err){
+    console.log(err.stack);
+    send(rep,500,json.stringify(err.stack));
+  }
+  send(rep,200,quests)
+  })
+
+const questStatus = jwtAuth(token)(async(req,rep)=>{
+    if (!(req.params.id || req.params.code)) {
+      send(rep,400,"Missing parameters");
+      return;
+    }
+    try {
+      const res = await client.query('SELECT * FROM current_quests WHERE user_id = $1',[req.jwt.user]);
+    for(let row of res.rows)
+      quests.push({
+        id: row.id,
+        quest: row.quest,
+        title: row.title,
+        description: row.description,
+        mind: row.mind,
+        body: row.body,
+        soul: row.soul,
+        community: row.community,
+        thriftiness: row.thriftiness,
+        pawprint: row.pawprint,
+        happiness: row.happiness
+      });
+  } catch(err){
+    console.log(err.stack);
+    send(rep,500,json.stringify(err.stack));
+  }
+  send(rep,200,quests)
+  })
+
 
 module.exports = router(
   get('/rquest',rquest),
   get('/find/:id',findbyid),
   get('/list5',list5),
   get('/list/:count',list),
-  get('/list/:count/:type',typedlist)
+  get('/list/:count/:type',typedlist),
+  // account related quest routes
+  get('/current',current),
+  post('/status/:id/:code',questStatus)
   )
