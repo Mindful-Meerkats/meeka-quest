@@ -172,12 +172,15 @@ const questStatus = jwtAuth(token)(async(req,rep)=>{
     return;
   }
   try {
-    const res = await client.query('SELECT quest_id FROM history WHERE user_id = $1 AND quest_id = $2',[req.jwt.user,req.params.id]);
+    const res = await client.query('SELECT quest_id FROM quest.history WHERE user_id = $1 AND quest_id = $2',[req.jwt.user,req.params.id]);
     if (res.rowCount < 1) {
-      const res = await client.query('INSERT INTO history VALUES($1,$2,$3,$4)',[req.jwt.user,req.params.id,req.params.status,json(req.body)]);
-      send(req,200);
+      const res = await client.query('INSERT INTO quest.history VALUES($1,$2,$3,$4)',[req.jwt.user,req.params.id,req.params.status,json(req.body)]);
+      send(req,201,rowCount);
     }
-
+    const res = await client.query(
+      'UPDATE quest.history SET status = $3, inserted_at = $4 WHERE user_id = $1 AND quest_id = $2',
+      [req.jwt.user,req.params.id,req.params.status,json(req.body)])
+    send(req,200,res.rowCount)
   } catch(err){
     console.log(err.stack);
     send(rep,500,json.stringify(err.stack));
